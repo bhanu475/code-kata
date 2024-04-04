@@ -8,7 +8,6 @@ import (
 
 	"github.com/spf13/cobra" // Using cobra for better CLI experience
 
-	"github.com/bhanu475/code-kata/internal/client" // Optional, if using a custom http client
 	"github.com/bhanu475/code-kata/pkg/todo"
 )
 
@@ -49,7 +48,7 @@ var rootCmd = &cobra.Command{
 			return fmt.Errorf("conflicting flags: cannot use even, odd, and all together")
 		}
 
-		return FetchAndPrintTodos(context.Background())
+		return FetchAndPrintTodos(context.Background(), endpoint, numTodos, filter, completed)
 	},
 }
 
@@ -63,7 +62,7 @@ func init() {
 	rootCmd.Flags().BoolVarP(&filterEven, "even", "", false, "Filter for even-numbered TODOs")
 	rootCmd.Flags().BoolVarP(&filterOdd, "odd", "", false, "Filter for odd-numbered TODOs")
 	rootCmd.Flags().BoolVarP(&fetchAll, "all", "", false, "Fetch all TODOs (ignores even/odd filters)")
-	rootCmd.Flags().BoolVarP(&completed, "completed", "c", false, "Filter for completed TODOs (only shows completed)")
+	//rootCmd.Flags().BoolVarP(&completed, "completed", "c", false, "Filter for completed TODOs (only shows completed)")
 }
 
 func main() {
@@ -73,55 +72,50 @@ func main() {
 	}
 }
 
-func FetchAndPrintTodos(ctx context.Context,) error {
-	client := client.NewHTTPClient()
-
+func FetchAndPrintTodos(ctx context.Context, endpoint string, numTodos int, filter string, completed bool) error {
 	var wg sync.WaitGroup
+
 	todoChan := make(chan *todo.Todo, numTodos)
 
+	wg.Add(1)
 	go func() {
-		defer close(todoChan)
+		defer wg.Done()
 		for todo := range todoChan {
 			if completed && !todo.Completed {
 				continue
 			}
 			fmt.Printf("Title: %s, Completed: %t\n", todo.Title, todo.Completed)
-			wg.Done()
 		}
 	}()
+
 	j := 1
 	for i := 1; i <= numTodos; i++ {
 		var shouldFetch bool
-
 		switch {
-		case filterEven && i%2 == 0:
+		case filter == "even":
 			j = i * 2
 			shouldFetch = true
-		case filterOdd && i%2 != 0:
+		case filter == "odd":
 			j = i*2 + 1
 			shouldFetch = true
-		case fetchAll:
+		case filter == "all":
 			j = i
 			shouldFetch = true
 		default:
+			j = i
 			shouldFetch = true
 		}
 
 		if !shouldFetch {
 			continue
 		}
+
 		wg.Add(1)
-		go todo.FetchTodo(ctx, client, endpoint, j, todoChan, &wg)
+		go todo.FetchTodo(ctx, endpoint, j, todoChan, &wg)
 	}
 
-	go func() {
-		wg.Wait()
-		close(todoChan)
-	}()
-
-	for todo := range todoChan {
-		fmt.Printf("Title: %s, Completed: %t\n", todo.Title, todo.Completed)
-	}
+	wg.Wait()
+	close(todoChan)
 
 	return nil
 }

@@ -15,7 +15,7 @@ type Todo struct {
 	Completed bool   `json:"completed"`
 }
 
-func FetchTodo(ctx context.Context, client *http.Client, endpoint string, id int, tchan chan<- *Todo, wg *sync.WaitGroup) {
+func FetchTodo(ctx context.Context, endpoint string, id int, tchan chan<- *Todo, wg *sync.WaitGroup) {
 	var todo Todo
 	resp, err := http.Get(fmt.Sprintf("%s/%d", endpoint, id))
 	if err != nil {
