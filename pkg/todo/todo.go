@@ -8,6 +8,7 @@ import (
 	"sync"
 )
 
+// can move to separate file
 type Todo struct {
 	UserID    int    `json:"userId"`
 	ID        int    `json:"id"`

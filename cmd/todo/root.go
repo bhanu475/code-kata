@@ -5,6 +5,7 @@ import (
 	"errors"
 
 	"github.com/bhanu475/code-kata/pkg/todo"
+	"github.com/bhanu475/code-kata/util"
 	"github.com/spf13/cobra" // Using cobra for better CLI experience
 )
 
@@ -27,7 +28,7 @@ func RootCmdRunE(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-	if e != "" {
+	if util.IsUrl(e) {
 		endpoint = e
 	} else {
 		return errors.New("endpoint can not be empty")
@@ -37,38 +38,25 @@ func RootCmdRunE(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-	if n > 0 {
-		numTodos = n
-	} else {
+	if n <= 0 {
 		return errors.New("number of todos should be greater than 0")
 	}
+	numTodos = n
 
 	f, err := cmd.Flags().GetString("filter")
 	if err != nil {
 		return err
 	}
 
-	if f != "" {
-		filter = f
-	} else {
+	if f == "" {
 		return errors.New("filter can not be empty")
-
 	}
-	switch filter {
+	filter = f
 
-	case "even":
-		{
-		}
-	case "odd":
-		{
-		}
-	case "all":
-		{
-		}
+	switch filter {
+	case "even", "odd", "all":
 	default:
-		{
-			return errors.New("filter should be one of even, odd, all")
-		}
+		return errors.New("filter should be one of even, odd, all")
 	}
 
 	return todo.FetchAndPrintTodos(context.Background(), endpoint, numTodos, filter, completed)
