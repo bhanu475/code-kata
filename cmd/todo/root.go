@@ -19,7 +19,9 @@ var (
 )
 
 var rootCmd = &cobra.Command{
-	Use:  "todo",
+	Use: "todo",
+
+	Long: "Fetch TODOs from an API and print them",
 	RunE: RootCmdRunE,
 }
 
@@ -72,7 +74,7 @@ func RootCmdRunE(cmd *cobra.Command, args []string) error {
 
 func RootCmdFlags(cmd *cobra.Command) {
 	cmd.Flags().StringP("endpoint", "e", defaultEndpoint, "API endpoint for Todos")
-	cmd.Flags().IntP("number", "n", 1, "Number of TODOs to fetch")
+	cmd.Flags().IntP("number", "n", 0, "Number of TODOs to fetch")
 	//cmd.MarkFlagRequired("number")
 
 	cmd.Flags().StringP("filter", "f", "all", "Filter for fetching TODOs (even, odd, all)")

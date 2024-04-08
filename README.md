@@ -1,36 +1,50 @@
-# Exercise
+# Go Solution
 
-The goal of the project is to build a command line tool.
+### Getting Started
+``` sh
+## build
+$ go build -o todo
 
-Using Go, write a command line tool that consumes the first `20` `even` numbered TODO's in most performant way and output the `title` and whether it is `completed` or not.
+## help
+$ ./todo 
+Fetch TODOs from an API and print them
 
-- TODO at index 1 can be accessed at: <https://jsonplaceholder.typicode.com/todos/1>
+Usage:
+  todo [flags]
 
-- TODO at index 2 can be accessed at: <https://jsonplaceholder.typicode.com/todos/2>
+Flags:
+  -e, --endpoint string   API endpoint for Todos (default "https://jsonplaceholder.typicode.com/todos")
+  -f, --filter string     Filter for fetching TODOs (even, odd, all) (default "all")
+  -h, --help              help for todo
+  -n, --number int        Number of TODOs to fetch
 
-Ensure you are submitting the code along with cli.
+## run 
 
-## Judging Criteria
+$./todo -n 2
+ID:1, Title: delectus aut autem, Completed: false
+ID:2, Title: quis ut nam facilis et officia qui, Completed: false
 
-- Engineering principles & standards
-- System extensibility & Scalability
-- Test coverage
-- Brevity and Simplicity
 
-## Bonus Points
+ 
+  ```
 
-- Docker
+  ### Test
 
-## FAQ
+  ```sh
+  $ go test ./...
+  ?       github.com/bhanu475/code-kata   [no test files]
+ok      github.com/bhanu475/code-kata/cmd/todo  (cached)
+?       github.com/bhanu475/code-kata/internal/client   [no test files]
+ok      github.com/bhanu475/code-kata/pkg/todo  (cached)
+ok      github.com/bhanu475/code-kata/util      (cached)
+  ```
 
-### What is the time-limit on exercise ?
-
-There is none, ensure you submit your best attempt and as soon as you possibly can.
-
-### How to submit ?
-
-Submit a GitHub / Bitbucket repo for review. No ZIP files!
-
-### Do I need to write tests for connecting to API ?
-
-That can be ommitted.
+  ### coverage
+  ```sh
+  go test -cover ./...
+  ?       github.com/bhanu475/code-kata   [no test files]
+ok      github.com/bhanu475/code-kata/cmd/todo  0.281s  coverage: 74.2% of statements
+?       github.com/bhanu475/code-kata/internal/client   [no test files]
+ok      github.com/bhanu475/code-kata/pkg/todo  2.135s  coverage: 88.6% of statements
+ok      github.com/bhanu475/code-kata/util      0.004s  coverage: 85.7% of statements
+  ```
