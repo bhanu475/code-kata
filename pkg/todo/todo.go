@@ -3,9 +3,12 @@ package todo
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 	"sync"
+
+	"github.com/bhanu475/code-kata/util"
 )
 
 // can move to separate file
@@ -29,9 +32,13 @@ func FetchTodo(ctx context.Context, endpoint string, id int, todoChan chan<- *To
 	todoChan <- &todo
 }
 
-func FetchAndPrintTodos(ctx context.Context, endpoint string, numTodos int, filter string, completed bool) error {
+func FetchAndPrintTodos(ctx context.Context, endpoint string, numTodos int, filter string, completed bool) ([]Todo, error) {
 	var wg sync.WaitGroup
+	var todos []Todo
 
+	if !util.IsUrl(endpoint) {
+		return nil, errors.New("endpoint can not be empty")
+	}
 	todoChan := make(chan *Todo, numTodos)
 	j := 1
 	for i := 1; i <= numTodos; i++ {
@@ -63,10 +70,7 @@ func FetchAndPrintTodos(ctx context.Context, endpoint string, numTodos int, filt
 		close(todoChan)
 	}()
 	for todo := range todoChan {
-		if todo == nil {
-			fmt.Printf("failed to fetch TODOs")
-		}
-		fmt.Printf("ID:%d, Title: %s, Completed: %t\n", todo.ID, todo.Title, todo.Completed)
+		todos = append(todos, *todo)
 	}
-	return nil
+	return todos, nil
 }

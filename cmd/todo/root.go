@@ -59,7 +59,15 @@ func RootCmdRunE(cmd *cobra.Command, args []string) error {
 		return errors.New("filter should be one of even, odd, all")
 	}
 
-	return todo.FetchAndPrintTodos(context.Background(), endpoint, numTodos, filter, completed)
+	todos, err := todo.FetchAndPrintTodos(context.Background(), endpoint, numTodos, filter, completed)
+	if err != nil {
+		return err
+	}
+
+	for _, t := range todos {
+		cmd.Printf("ID:%d, Title: %s, Completed: %t", t.ID, t.Title, t.Completed)
+	}
+	return nil
 }
 
 func RootCmdFlags(cmd *cobra.Command) {

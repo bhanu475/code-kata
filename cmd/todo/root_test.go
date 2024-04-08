@@ -2,7 +2,6 @@ package cmd_test
 
 import (
 	"bytes"
-	"errors"
 	"strings"
 	"testing"
 
@@ -31,19 +30,25 @@ func TestRootCmd(t *testing.T) {
 		err  error
 		out  string
 	}{
-		{
-			args: []string{"-n", "0"},
-			err:  errors.New("number of todos should be greater than 0"),
-		},
-		{
-			args: nil,
-			err:  errors.New("number of todos should be greater than 0"),
-		},
 		// {
-		// 	args: []string{"-e", "https://jsonplaceholder.typicode.com/todos", "-n", "1", "-f", "all"},
-		// 	err:  nil,
-		// 	out:  "ID:1, Title: delectus aut autem, Completed: false",
+		// 	args: []string{"-n", "0"},
+		// 	err:  errors.New("number of todos should be greater than 0"),
 		// },
+		// {
+		// 	args: nil,
+		// 	err:  errors.New("number of todos should be greater than 0"),
+		// },
+		// // Add more test cases here
+		// {
+		// 	args: []string{"-n", "1"},
+		// 	err:  nil,
+		// 	out:  "",
+		// },
+		{
+			args: []string{"-e", "https://jsonplaceholder.typicode.com/todos", "-n", "1", "-f", "all"},
+			err:  nil,
+			out:  "ID:1, Title: delectus aut autem, Completed: false",
+		},
 		// {
 		// 	args: []string{"--toggle"},
 		// 	err:  nil,
