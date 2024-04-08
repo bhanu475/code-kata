@@ -20,7 +20,7 @@ func TestFetchAndPrintTodos(t *testing.T) {
 
 	todos, err := todo.FetchAndPrintTodos(ctx, endpoint, numTodos, filter, completed)
 	is.NoErr(err)
-	//is.Equal(len(todos), numTodos)
+	//is.Equal(len(todos), numTodos) // api returning 404 for some ids
 	for _, todo := range todos {
 		is.True(todo.ID%2 == 0)
 	}
@@ -28,7 +28,7 @@ func TestFetchAndPrintTodos(t *testing.T) {
 	filter = "odd"
 	todos, err = todo.FetchAndPrintTodos(ctx, endpoint, numTodos, filter, completed)
 	is.NoErr(err)
-	//is.Equal(len(todos), numTodos)
+	//is.Equal(len(todos), numTodos) // api returning 404 for some ids
 	for _, todo := range todos {
 		is.True(todo.ID%2 != 0)
 	}

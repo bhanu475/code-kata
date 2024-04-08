@@ -65,7 +65,7 @@ func RootCmdRunE(cmd *cobra.Command, args []string) error {
 	}
 
 	for _, t := range todos {
-		cmd.Printf("ID:%d, Title: %s, Completed: %t", t.ID, t.Title, t.Completed)
+		cmd.Printf("ID:%d, Title: %s, Completed: %t\n", t.ID, t.Title, t.Completed)
 	}
 	return nil
 }
